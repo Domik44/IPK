@@ -12,8 +12,6 @@ int main(int argc, char **argv){
     int port = atoi(argv[1]);
 
     // Getting informations
-    double usage = cpu_usage(); // CPU usage
-
     char hostname[NAME_MAX]; // Hostname
     get_hostname(&hostname);
 
@@ -75,6 +73,7 @@ int main(int argc, char **argv){
             strcat(answer, cpu_name);
         }
         else if(strncmp(buffer, "GET /load", strlen("GET /load")) == 0){
+            double usage = cpu_usage(); // CPU usage
             char usage_str[7];
             sprintf(usage_str,"%.2f", usage);
             strcat(answer, usage_str);
