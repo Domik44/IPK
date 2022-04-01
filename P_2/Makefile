@@ -4,8 +4,8 @@
 # IPK project #1
 
 CC=gcc
-CFLAGS=-std=gnu99 -Wall -Werror
-LIBRARIES=-lm
+CFLAGS=-std=gnu99 -Wall
+LIBRARIES=-lpcap
 FILES= *.c *.h
 NAME=ipk-sniffer
 LOGIN=xpopdo00
@@ -17,19 +17,19 @@ clean:
 	rm -f *.o $(NAME)
 
 run:
-	./$(NAME) -i eth0 -p 23 -t -n 10
+	sudo ./$(NAME) -i enp0s3 -t -n 5
 
 run1:
 	./$(NAME) -i
 
 run2:
-	./$(NAME) -i eth0 -p 23 -u -n 10
+	sudo ./$(NAME) -i enp0s3 --icmp -n 5
 
 run3:
-	./$(NAME) -i eth0 -p 23 --arp -n 10
+	sudo ./$(NAME) -i enp0s3 --arp -n 5
 
 run4:
-	./$(NAME) -i eth0 -p 23 --icmp -n 10
+	sudo ./$(NAME) -i enp0s3 --udp -n 10
 
 zip:
 	zip $(LOGIN).zip  $(FILES) Makefile Readme.md
