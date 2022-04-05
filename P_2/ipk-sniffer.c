@@ -42,7 +42,7 @@ bool check_interface(char *name){
 
 int parse_arguments(int argc, char **argv, t_Args *args){
     if(argc <= 2){
-        if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0){
+        if(argc == 2 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)){
             help_function();
         }
         else{
