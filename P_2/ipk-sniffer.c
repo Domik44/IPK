@@ -74,9 +74,19 @@ int parse_arguments(int argc, char **argv, t_Args *args){
             i++;
 
             // When port number is given we have to look for transtort layer protocols
-            boolean_counter += 2;
-            args->tcp = true;
-            args->udp = true;
+            if(args->tcp == true && args->udp == false){
+                boolean_counter += 1;
+                args->udp = true;
+            }
+            else if(args->tcp == false && args->udp == true){
+                boolean_counter += 1;
+                args->tcp = true;
+            }
+            else if (args->tcp == false && args->udp == false){
+                boolean_counter += 2;
+                args->tcp = true;
+                args->udp = true;
+            }
         }
         else if(strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--tcp") == 0){
             if(args->tcp != true)
