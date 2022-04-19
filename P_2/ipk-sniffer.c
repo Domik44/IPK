@@ -200,16 +200,16 @@ void create_filter(char *filter, int bool_counter, t_Args *args){
 void print_basic_info(char *time, char *source, char *dest, int len, int protocol_type){
     switch (protocol_type){
         case 0:
-        case 84:
+        case ARP:
             printf("***ARP*** \n");
             break;
-        case 1:
+        case ICMP:
             printf("***ICMP*** \n");
             break;
-        case 6:
+        case TCP:
             printf("***TCP*** \n");
             break;
-        case 17:
+        case UDP:
             printf("***UDP*** \n");
             break;
         default:
@@ -221,6 +221,8 @@ void print_basic_info(char *time, char *source, char *dest, int len, int protoco
     printf("frame length: %d bytes\n", len);
 }
 
+// Function was borrowed from https://www.tcpdump.org/other/sniffex.c
+// Author: Tim Carstens
 void print_hex_ascii(const u_char *payload, int len, int offset){
 
     int i;
@@ -261,6 +263,8 @@ void print_hex_ascii(const u_char *payload, int len, int offset){
     printf("\n");
 }
 
+// Function was borrowed from https://www.tcpdump.org/other/sniffex.c
+// Author: Tim Carstens
 void print_payload(const u_char *payload, int len){
 
     int len_rem = len;
@@ -295,6 +299,7 @@ void print_payload(const u_char *payload, int len){
 
 // Other
 
+// Function was overrided to print leading zeros onto its output
 char *ether_ntoa_override(char *buffer, struct ether_addr *address){
     sprintf(buffer, "%02x:%02x:%02x:%02x:%02x:%02x",
             address->ether_addr_octet[0], address->ether_addr_octet[1],
@@ -325,11 +330,11 @@ void process_udp(const u_char *data, int ip_header_len){
 }
 
 void process_arp(){
-    //printf("ARP DATA\n");
+    // Could write any data specific for arp
 }
 
 void process_icmp(){
-    //printf("ICMP DATA\n");
+    // Could write any data specific for icmp
 }
 
 void sniffer_callback(u_char *arguments, const struct pcap_pkthdr *packet_header, const u_char *data){
@@ -352,11 +357,11 @@ void sniffer_callback(u_char *arguments, const struct pcap_pkthdr *packet_header
     int len = packet_header->len;
 
     // Getting timestamp
-    char miliseconds[7]; // TODO -> mozna predelat aby to byl jen milsekundy a ne mikro
-    char date_format[20] = "%FT%T.";
-    char time_zone[3] = "%z";
+    char miliseconds[MILISECONDS+1];
+    char date_format[DATE_FORMAT] = "%FT%T.";
+    char time_zone[TIME_ZONE] = "%z";
     
-    snprintf(miliseconds, 6, "%ld", packet_header->ts.tv_usec);
+    snprintf(miliseconds, MILISECONDS, "%ld", packet_header->ts.tv_usec);
     strcat(date_format, miliseconds);
     strcat(date_format, time_zone);
 
@@ -373,7 +378,7 @@ void sniffer_callback(u_char *arguments, const struct pcap_pkthdr *packet_header
     int ip_header_len;
     char ip_src[IP_LEN];
     char ip_dst[IP_LEN];
-    char type_ip[10];
+    char type_ip[TYPE_IP];
 
     // Chosing which IP protocol we have and printing src and dest IP addresses
     if(ipv6 == ETHERTYPE_IPV6){
@@ -398,7 +403,7 @@ void sniffer_callback(u_char *arguments, const struct pcap_pkthdr *packet_header
     // Printing head info of packet
     print_basic_info(time, ethernet_shost, ethernet_dhost, len, protocol_type);
     // Printing IP addresses
-    if(protocol_type != 0 && protocol_type != 84){
+    if(protocol_type != 0 && protocol_type != ARP){
         printf("src %s: %s\n", type_ip, ip_src);
         printf("dst %s: %s\n", type_ip, ip_dst);
     }
@@ -441,6 +446,7 @@ void sniffer_callback(u_char *arguments, const struct pcap_pkthdr *packet_header
 
 int main(int argc, char **argv){
     
+    // Getting input arguments
     t_Args args = ctor_Args();
     int bool_counter = parse_arguments(argc, argv, &args);
     

@@ -1,8 +1,12 @@
-// Authors: Dominik Pop
-// Login: xpopdo00, <xpopdo00@stud.fit.vutbr.cz>
-// VUT FIT, 2 BIT, summer semestr
-// Date: 29.3.2021
-// Second project for IPK -> packet sniffer ZETA
+/**
+ * @author Dominik Pop, xpopdo00
+ * @date 29.3.2021
+ * 
+ * @brief Header file for ipk-sniffer.c describing functions, structures, defines, ... 
+ * 
+ * VUT FIT, 2 BIT
+ * <xpopdo00@stud.fit.vutbr.cz>
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,6 +39,17 @@
 #define MAC_LEN 20
 #define IP_LEN 40
 #define TIME_LEN 50
+
+#define DATE_FORMAT 20
+#define MILISECONDS 6
+#define TIME_ZONE 3
+
+#define ARP 84
+#define ICMP 1
+#define TCP 6
+#define UDP 17
+
+#define TYPE_IP 10
 
 // STRUCTURES
 
@@ -146,8 +161,8 @@ void process_tcp(const u_char *data ,int ip_header_len);
 /**
  * @brief Fucntion gets important information about UDP packet
  * 
- * @param data 
- * @param ip_header_len 
+ * @param data String containing packet data
+ * @param ip_header_len Length of ip header
  */
 void process_udp(const u_char *data, int ip_header_len);
 
